@@ -20,7 +20,6 @@ def get_movie_data(movie_id):
         },
     )
     json_response = response.json()
-    print(json.dumps(json_response, indent=4, sort_keys=True))
     title = json_response["title"]
     tagline = json_response["tagline"]
     genres = ", ".join(genre["name"] for genre in json_response["genres"])

@@ -1,39 +1,18 @@
 import flask
-import requests
 import os
-import random
-import base64
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import find_dotenv, load_dotenv
 
-from wikipedia import get_wiki_link
-from tmdb import get_movie_data
+load_dotenv(find_dotenv())
 
 app = flask.Flask(__name__)
+# Point SQLAlchemy to your Heroku database
+db_url = os.getenv("DATABASE_URL")
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+# Gets rid of a warning
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.secret_key = b"I am a secret key!"  # don't defraud my app ok?
 
-
-MOVIE_IDS = [
-    157336,  # actually IDK what this is
-]
-
-
-@app.route("/")
-def index():
-    movie_id = random.choice(MOVIE_IDS)
-
-    # API calls
-    (title, tagline, genre, poster_image) = get_movie_data(movie_id)
-    wikipedia_url = get_wiki_link(title)
-
-    return flask.render_template(
-        "index.html",
-        title=title,
-        tagline=tagline,
-        genre=genre,
-        poster_image=poster_image,
-        wiki_url=wikipedia_url,
-    )
-
-
-if __name__ == "__main__":
-    app.run(
-        host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=True
-    )
+db = SQLAlchemy(app)
