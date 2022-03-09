@@ -8,5 +8,5 @@ export DATABASE_URL="<YOUR POSTGRESQL DB URL>"
 
 
 ## To run the app
-1. Run `python3 app.py`
+1. Run `python3 routes.py`
 
